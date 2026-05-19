@@ -1,0 +1,6 @@
+{
+  "name": "Sentinel AI Security Analyzer",
+  "description": "Multi-agent security pipeline for code analysis using LangGraph and Gemini AI. Identifies OWASP vulnerabilities, secrets, and dependency issues.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
