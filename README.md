@@ -2,15 +2,15 @@
 <img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-# Sentinel AI Security Analyzer v2
+# Arkos
 
-Sentinel AI Security Analyzer is an enterprise-grade Continuous Security Intelligence Platform. Emitting from our robust multi-agent LangGraph architecture, Sentinel provides a distributed analysis pipeline powered by `gemini-2.0-flash` to execute deep source code analysis, automate remediation through AI patch generation, and present intelligence comprehensively across a fully responsive, data-rich React dashboard.
+Arkos is an enterprise-grade Continuous Security Intelligence Platform. Emitting from our robust multi-agent LangGraph architecture, Arkos provides a distributed analysis pipeline powered by `gemini-2.0-flash` to execute deep source code analysis, automate remediation through AI patch generation, and present intelligence comprehensively across a fully responsive, data-rich React dashboard.
 
 ## 🚀 Core Functionalities
 
 - **Asynchronous Execution:** Scans are pushed linearly to a BullMQ worker via Redis, enabling parallel processing without degrading the API gateway.
 - **Fingerprint Deduplication:** Generates `SHA256` hashing on identified vulnerabilities to drastically reduce noisy scans and false positives.
-- **Live SSE Streaming:** Client views auto-update securely over Server-Sent Events to map Agent progression visually using Framer Motion. 
+- **Live Supabase Realtime:** Client views auto-update securely over Supabase Realtime broadcast channels to map Agent progression visually using Framer Motion. 
 - **Automated Fix Generation:** An independent lazy agent endpoint auto-generates unified Diff patches and deployment explanations for immediate vulnerability remediation.
 - **Role-based Authentication Sharing:** Supports creating cryptographically signed JWTs to dispense read-only access to C-Suite Executive Reports.
 
@@ -23,6 +23,7 @@ The Frontend leverages **React-Router v6**, rendering specific intelligence segm
 - **`/` (Dashboard):** High-level aggregate statistics overview. Mounts `recharts` to render Risk Trend gradients, OWASP Radar charts, and Severity Pies.
 - **`/projects/:id` (Project Detail):** Deep dive into a specific codebase tracking its historical scans, webhooks, and mean time to resolve (MTTR).
 - **`/scan/:id` (Live Scan View):** The Action Canvas. Animates actively pulsing agents in real-time. Uncovers vulnerabilities in a `framer-motion` sliding feed matching exact pipeline completion states!
+- **`/code-analyzer` (Code Analyzer):** Interactive dashboard that dynamically clones GitHub repositories, extracts dependency trees, and visualizes them using React Flow.
 - **`/findings` (Global Findings Explorer):** Endless virtualized scrolling via `@tanstack/react-virtual` allowing instant text, status, and category filtering across millions of bugs.
 - **`/findings/:id` (Finding Detail Desk):** Two-column detailed workspace. Parses CVSS severity algorithms and provides access to the powerful **AI Auto-Fix Generator** which returns interactive diff-view code blocks.
 - **`/report/:scanId` (Executive Report):** Printable UI rendering compliance gaps, risk telemetry, and AI summarized remediation strategies. (Can be utilized via public Read-Only JWT links!)
@@ -54,15 +55,16 @@ Our orchestration architecture leverages `@langchain/langgraph` to process disti
 
 - **Frontend:** React 19, Vite, Tailwind CSS v4, Framer Motion, Recharts, TanStack Virtual, React-Router-DOM
 - **Backend:** Node.js, Express, BullMQ
-- **Database / Cache:** Prisma ORM (PostgreSQL), Redis & IORedis
-- **AI Core:** Google GenAI SDK (`gemini-2.0-flash`), LangChain / LangGraph
+- **Database / Backend-as-a-Service:** Supabase (PostgreSQL, Realtime)
+- **Message Queue / Cache:** Redis & IORedis (BullMQ)
+- **AI Core:** `gemini-2.0-flash`, LangChain / LangGraph
 
 ## 🏃‍♂️‍➡️ Run Locally
 
-**Prerequisites:** Node.js v20+, Docker (for Postgres/Redis)
+**Prerequisites:** Node.js v20+, Docker (for Redis), Supabase Account
 
 1. **Start Services:**
-   Ensure Docker is running, then spin up the database and cache utilizing the provided compose setup:
+   Ensure Docker is running, then spin up Redis utilizing the provided compose setup:
    ```bash
    docker-compose up -d
    ```
@@ -73,10 +75,7 @@ Our orchestration architecture leverages `@langchain/langgraph` to process disti
    ```
 
 3. **Environment Setup (`.env`):**
-   Ensure database URLs map to your Docker exposed ports. Ensure you've provided the `GEMINI_API_KEY`.
-   ```bash
-   npx prisma db push
-   ```
+   Ensure you've configured your `.env` with your `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, and `GEMINI_API_KEY`.
 
 4. **Launch Application Suites:**
    Since we're running an asynchronous system, we boot 3 processes (Server, Worker, Frontend):
